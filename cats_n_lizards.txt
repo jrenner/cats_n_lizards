@@ -1,0 +1,11 @@
+"""
+Given several dictionaries/hash maps, create a single hash map consisting of:
+ 1. ONLY keys that are present in all hash maps
+ 2. The value of that key as the sum of the values for that key across all hash maps.
+"""
+
+dict1 = { "cats": 3, "dogs": 5, "birds": 2, "lizards": 4 }
+dict2 = { "books": 5, "lizards": 11, "papers": 1, "cats": 2 }
+dict3 = { "dogs": 8, "cats": 5, "lizards": 5 }
+
+# write solution here:

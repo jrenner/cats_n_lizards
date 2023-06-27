@@ -139,7 +139,7 @@ mod tests {
         vec![dict1, dict2, dict3]
     }
 
-    fn get_expected_output() -> HashMap<&str, i32> {
+    fn get_expected_output() -> HashMap<&'static str, i32> {
         HashMap::from([("cats", 10), ("lizards", 20)])
     }
 

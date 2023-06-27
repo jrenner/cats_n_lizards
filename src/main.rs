@@ -89,6 +89,31 @@ fn cats_n_lizards(animals: Vec<HashMap<&str, i32>>) -> Option<HashMap<&str, i32>
   }
 }
 
+fn chatgpt_solution(dicts: Vec<HashMap<&str, i32>>) -> HashMap<&str, i32> {
+  let mut key_count: HashMap<&str, usize> = HashMap::new();
+  let mut value_sum: HashMap<&str, i32> = HashMap::new();
+  
+  for dict in dicts.iter() {
+      for (key, value) in dict.iter() {
+          *key_count.entry(key.clone()).or_insert(0) += 1;
+          *value_sum.entry(key.clone()).or_insert(0) += value;
+      }
+  }
+  
+  let num_dicts = dicts.len();
+  let mut result: HashMap<&str, i32> = HashMap::new();
+  
+  for (key, count) in key_count.iter() {
+      if *count == num_dicts {
+          if let Some(&sum) = value_sum.get(key) {
+              result.insert(key.clone(), sum);
+          }
+      }
+  }
+  
+  result
+}
+
 
 fn main() {
     let dict1 = HashMap::from([("cats", 3), ("dogs", 5), ("birds", 2), ("lizards", 4)]);
@@ -105,28 +130,37 @@ mod tests {
     use std::collections::HashMap;
     use crate::solve_for_dicts;
     use crate::cats_n_lizards;
+    use crate::chatgpt_solution;
 
-    #[test]
-    fn cats_n_lizards_1() {
+    fn create_test_inputs() -> Vec<HashMap<&'static str, i32>> {
         let dict1 = HashMap::from([("cats", 3), ("dogs", 5), ("birds", 2), ("lizards", 4)]);
         let dict2 = HashMap::from([("books", 5), ("lizards", 11), ("papers", 1), ("cats", 2)]);
         let dict3 = HashMap::from([("dogs", 8), ("cats", 5), ("lizards", 5)]);
-        let all_dicts = vec![dict1, dict2, dict3];
+        vec![dict1, dict2, dict3]
+    }
 
+    fn get_expected_output() -> HashMap<&str, i32> {
+        HashMap::from([("cats", 10), ("lizards", 20)])
+    }
+
+    #[test]
+    fn cats_n_lizards_1() {
+        let all_dicts = create_test_inputs();
         let res = solve_for_dicts(all_dicts);
-        let expected = HashMap::from([("cats", 10), ("lizards", 20)]);
-        assert_eq!(res, expected);
+        assert_eq!(res, get_expected_output());
     }
 
     #[test]
     fn cats_n_lizards_2() {
-        let dict1 = HashMap::from([("cats", 3), ("dogs", 5), ("birds", 2), ("lizards", 4)]);
-        let dict2 = HashMap::from([("books", 5), ("lizards", 11), ("papers", 1), ("cats", 2)]);
-        let dict3 = HashMap::from([("dogs", 8), ("cats", 5), ("lizards", 5)]);
-        let all_dicts = vec![dict1, dict2, dict3];
-
+        let all_dicts = create_test_inputs();
         let res = cats_n_lizards(all_dicts).unwrap();
-        let expected = HashMap::from([("cats", 10), ("lizards", 20)]);
-        assert_eq!(res, expected);
+        assert_eq!(res, get_expected_output());
+    }
+
+    #[test]
+    fn test_chatgpt_solution() {
+        let all_dicts = create_test_inputs();
+        let res = chatgpt_solution(all_dicts);
+        assert_eq!(res, get_expected_output());
     }
 }

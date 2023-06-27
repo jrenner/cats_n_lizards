@@ -19,7 +19,7 @@ use std::collections::HashMap;
 fn solve_for_dicts(dicts: Vec<HashMap<&str, i32>>) -> HashMap<&str, i32> {
     let mut common_keys: Vec<&str> = vec![];
 
-    let d1 = dicts[0].clone();
+    let d1 = &dicts[0];
     for k in d1.keys() {
 
         let mut is_common = true;

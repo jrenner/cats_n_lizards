@@ -54,6 +54,41 @@ fn solve_for_dicts(dicts: Vec<HashMap<&str, i32>>) -> HashMap<&str, i32> {
     return res;
 }
 
+fn cats_n_lizards(animals: Vec<HashMap<&str, i32>>) -> Option<HashMap<&str, i32>> {
+  match animals.len() {
+      0 => None,
+      1 => animals.into_iter().next(),
+      _ => {
+          let result = animals.iter().skip(1).enumerate().fold(HashMap::new(), |mut acc, (i, animal)| {
+              if i == 0 {
+                  if let Some(prev_animal) = animals.get(i) {
+                      for (key, value) in animal {
+                          if prev_animal.contains_key(key) {
+                              let next_value = prev_animal.get(key).unwrap();
+                              acc.insert(*key, value + next_value);
+                          }
+                      }
+                  }
+              } else {
+                  for (key, value) in animal {
+                      if acc.contains_key(key) {
+                          let next_value = acc.get(key).unwrap();
+                          acc.insert(key, value + next_value);
+                      }
+                  }
+              }
+              acc
+          });
+
+          if result.is_empty() {
+              None
+          } else {
+              Some(result)
+          }
+      }
+  }
+}
+
 
 fn main() {
     let dict1 = HashMap::from([("cats", 3), ("dogs", 5), ("birds", 2), ("lizards", 4)]);
@@ -69,6 +104,7 @@ fn main() {
 mod tests {
     use std::collections::HashMap;
     use crate::solve_for_dicts;
+    use crate::cats_n_lizards;
 
     #[test]
     fn cats_n_lizards_1() {
@@ -78,6 +114,18 @@ mod tests {
         let all_dicts = vec![dict1, dict2, dict3];
 
         let res = solve_for_dicts(all_dicts);
+        let expected = HashMap::from([("cats", 10), ("lizards", 20)]);
+        assert_eq!(res, expected);
+    }
+
+    #[test]
+    fn cats_n_lizards_2() {
+        let dict1 = HashMap::from([("cats", 3), ("dogs", 5), ("birds", 2), ("lizards", 4)]);
+        let dict2 = HashMap::from([("books", 5), ("lizards", 11), ("papers", 1), ("cats", 2)]);
+        let dict3 = HashMap::from([("dogs", 8), ("cats", 5), ("lizards", 5)]);
+        let all_dicts = vec![dict1, dict2, dict3];
+
+        let res = cats_n_lizards(all_dicts).unwrap();
         let expected = HashMap::from([("cats", 10), ("lizards", 20)]);
         assert_eq!(res, expected);
     }
